@@ -1,1 +1,3 @@
-# particle_filter_on_episode
+# particle_filter_on_episode  
+
+PFoEのアルゴリズムをpythonのモジュールにしたい
