@@ -76,12 +76,14 @@ def likeli_func(sensor,episode):
     """
     likelihood = [0.0 for i in range(len(episode)) ]
     n = [0.0 for i in range(len(sensor)) ]
+
     print "sensor:",sensor
     print "episode:",episode
     print "likeli:",likelihood
 
     for i in range(len(likelihood)):
         for ii in range(len(sensor)):
-            n[ii] = math.fabs( sensor[ii] - episode[i][0] )
-            
+            n[ii] += math.fabs( sensor[ii] - episode[i][0][ii] )
+        likelihood[i] = 0.5 ** sum(n)
+                
     return likelihood
