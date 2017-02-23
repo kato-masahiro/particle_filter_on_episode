@@ -1,5 +1,7 @@
 #coding:utf-8
 
+import math
+
 def func(sensor,episode):
     """
     概要:尤度関数を定義する.
@@ -21,10 +23,12 @@ def func(sensor,episode):
     """
     このループ内で尤度関数の内容を定義せよ
     """
-    for i in range( len(likelihood) ):
+    for i in range( len(episode) ):
         for ii in range( len(sensor) ):
             n[ii] += math.fabs( sensor[ii] - episode[i][0][ii] )
         likelihood[i] = 0.5 ** sum(n)
+
+        n = [0.0 for i in range( len(sensor) ) ]
 
     return likelihood
 
