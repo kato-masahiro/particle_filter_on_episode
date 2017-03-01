@@ -11,17 +11,33 @@ likelihood_function.pyの中で尤度関数の内容を定義
 """
 class Robot:
     def __init__(self,sensor,choice,particle=1000,maximum=100,resetting=False):
-        self.sensor = [0 for i in range(sensor)] #センサ値
+        self.sensor = [None for i in range(sensor)] #センサ値
         self.particle_num = particle #パーティクルの数
         self.particle_distribution = [0 for i in range(particle)] #パーティクルの分布数
         self.particle_weight = [1.0 / particle for i in range(particle)] #パーティクルの重み
         self.choice = choice #選択肢の数
-        self.action = 0 #選択された行動
-        self.reward = 0 #報酬値
+        self.action = None #選択された行動
+        self.reward = None  #報酬値
         self.episode = [[self.sensor,self.action,self.reward]] #エピソード集合
         self.maximum = maximum #エピソード数の上限
         self.resetting = resetting #resettingを行うかどうか
         self.alpha = 0.0 #各パーティクルの尤度の平均
+
+    def add_event(self,sensor,action,reward):
+        """
+        処理:ロボットのエピソード集合に新しいイベントを追加する
+             追加した結果、エピソード数の上限に達した場合は最も古いイベントを削除する
+        引数:sensor[],action,reward
+        戻り値: - 
+        """
+        l = []
+        l.append(sensor)
+        l.append(action)
+        l.append(reward)
+        self.episode.append(l)
+        if( len(self.episode) > self.maximum ):
+            del self.episode[0]
+
 
     def likeli_func(self):
         """
@@ -59,7 +75,7 @@ class Robot:
             self.alpha += self.particle_weight[i]
         self.alpha /= self.particle_num
 
-    def motion_update():
+    def particle_resampling(self):
         """
         処理:重みに基づきパーティクルをリサンプリングする
         引数: - 
@@ -75,10 +91,21 @@ class Robot:
             seed = random.randint(1,10000)
             seed = float(seed) / 10000
             for ii in range( len(self.episode) ):
-                seed -= self.weight_of_episode[i]
+                seed -= weight_of_episode[ii]
                 if seed <= 0:
-                    self.particle[i] = ii
+                    self.particle_distribution[i] = ii
                     break
+
+    def random_resampling(self):
+        """
+        処理:全てのパーティクルをエピソード中に均等にリサンプリングする
+             全てのパーティクルの重みを均等にする
+        引数: -
+        戻り値: -
+        """
+        for i in range(self.particle_num):
+            self.particle_distribution[i] = i % len(self.episode) 
+            self.particle_weight[i] = 1.0 / self.particle_num
 
     def decision_making(self):
         """
