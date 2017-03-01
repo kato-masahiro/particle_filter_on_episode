@@ -56,7 +56,7 @@ class Robot:
             s += self.particle_weight[i]
         for i in range(self.particle_num):
             self.particle_weight[i] = self.particle_weight[i] / s
-            self.alpha = self.particle_weight[i]
+            self.alpha += self.particle_weight[i]
         self.alpha /= self.particle_num
 
     def motion_update():
@@ -67,13 +67,18 @@ class Robot:
         """
         weight_of_episode = [0.0 for i in range( len(self.episode) ) ] 
 
-        for i in range(self.particle_num):
-            weight_of_episode[i] += self.particle_weight[i]
+        for i in range( len(self.episode) ):
+            for ii in range(self.particle_num):
+                if self.particle_distribution[ii] == i:
+                    weight_of_episode[i] += self.particle_weight[ii]
         for i in range(self.particle_num):
             seed = random.randint(1,10000)
             seed = float(seed) / 10000
             for ii in range( len(self.episode) ):
-                
+                seed -= self.weight_of_episode[i]
+                if seed <= 0:
+                    self.particle[i] = ii
+                    break
 
     def decision_making(self):
         """
@@ -82,7 +87,7 @@ class Robot:
         引数:
         戻り値:
         """
-        return 1;
+        return 1
 
     def particle_sliding():
         """
