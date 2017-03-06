@@ -66,7 +66,8 @@ class Robot:
                                        * likelihood[ self.particle_distribution[i] ]
             s += self.particle_weight[i]
         for i in range(self.particle_num):
-            self.particle_weight[i] = self.particle_weight[i] / s
+            if s != 0.0:
+                self.particle_weight[i] = self.particle_weight[i] / s
             self.alpha += self.particle_weight[i]
         self.alpha /= self.particle_num
 
@@ -83,6 +84,11 @@ class Robot:
             for ii in range(self.particle_num):
                 if self.particle_distribution[ii] == i:
                     weight_of_episode[i] += self.particle_weight[ii]
+
+        if sum(weight_of_episode) == 0.0:
+            for i in range( len(self.episode) ):
+                weight_of_episode[i] = 1.0 / len(self.episode)
+
         for i in range(self.particle_num):
             seed = random.randint(1,100)
             if seed == 1:
@@ -158,10 +164,30 @@ class Robot:
             if self.particle_distribution[i] != (len(self.episode) - 1):
                 self.particle_distribution[i] += 1
 
-    def see_distribution(self):
+    def weight_reduction(self):
+        """
+        処理:パーティクルが持つ重み(particle_weight[])について、
+             そのパーティクルが存在しているエピソードがありえない場合に
+             係数(reduction_rate)を掛けて削減する
+             最新のイベントを追加した後、パーティクルをスライドさせる前に実行する
+        引数: - 
+        戻り値: -
+        """
+        latest = len(self.episode) - 1
+        # 行動による削減
+        for i in range(self.particle_num):
+            if( self.episode[ self.particle_distribution[i] ][1] != self.episode[latest][1] ):
+                self.particle_weight[i] *= self.reduction_rate
+
+        # 報酬値による削減
+        for i in range(self.particle_num):
+            if( self.episode[ self.particle_distribution[i] ][2] != self.episode[latest][2] ):
+                self.particle_weight[i] *= self.reduction_rate
+
+    def see_distribution(self,star = 50):
         """
         処理:パーティクルの分布の様子を画面に表示する
-        引数: - 
+        引数:star 
         戻り値: - 
         """
         particle_numbers = [0 for i in range( len(self.episode) ) ]
@@ -172,5 +198,5 @@ class Robot:
 
         for i in range( len(self.episode) ):
             print "\n",self.episode[i][1],"\t|",self.episode[i][2],"\t|",particle_numbers[i],"\t|",
-            for ii in range(int( float(particle_numbers[i]) / float(self.particle_num) * 50.0 ) ):
+            for ii in range(int( float(particle_numbers[i]) / float(self.particle_num) * float(star) ) ):
                 print "*",
