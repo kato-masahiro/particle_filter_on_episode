@@ -121,6 +121,9 @@ class Robot:
         """
         vote = [0.0 for i in range(self.particle_num) ]
 
+        if(self.episode[0][1] == None):
+            return random.randint(0,self.choice - 1)
+
         for i in range(self.particle_num):
             distance = 0
             non_zero_reward = 0.0
