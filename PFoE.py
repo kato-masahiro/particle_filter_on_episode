@@ -65,10 +65,12 @@ class Robot:
             self.particle_weight[i] = self.particle_weight[i]\
                                        * likelihood[ self.particle_distribution[i] ]
             s += self.particle_weight[i]
+
         for i in range(self.particle_num):
             if s != 0.0:
                 self.particle_weight[i] = self.particle_weight[i] / s
             self.alpha += self.particle_weight[i]
+
         self.alpha /= self.particle_num
 
     def particle_resampling(self):
@@ -78,7 +80,7 @@ class Robot:
         引数: - 
         戻り値: -
         """
-        weight_of_episode = [0.0 for i in range( len(self.episode) ) ] 
+        weight_of_episode = [0.0 for i in range( len(self.episode) ) ]
 
         for i in range( len(self.episode) ):
             for ii in range(self.particle_num):
@@ -170,7 +172,8 @@ class Robot:
     def weight_reduction(self):
         """
         処理:パーティクルが持つ重み(particle_weight[])について、
-             そのパーティクルが存在しているエピソードがありえない場合に
+             そのパーティクルが存在しているエピソードが、
+             最新のイベントと比較して矛盾している場合に、
              係数(reduction_rate)を掛けて削減する
              最新のイベントを追加した後、パーティクルをスライドさせる前に実行する
         引数: - 
@@ -179,12 +182,9 @@ class Robot:
         latest = len(self.episode) - 1
         # 行動による削減
         for i in range(self.particle_num):
-            if( self.episode[ self.particle_distribution[i] ][1] != self.episode[latest][1] ):
-                self.particle_weight[i] *= self.reduction_rate
-
-        # 報酬値による削減
-        for i in range(self.particle_num):
-            if( self.episode[ self.particle_distribution[i] ][2] != self.episode[latest][2] ):
+            if( self.episode[ self.particle_distribution[i] ][1] != self.episode[latest][1] \
+                or \
+            self.episode[ self.particle_distribution[i] ][2] != self.episode[latest][2] ):
                 self.particle_weight[i] *= self.reduction_rate
 
     def see_distribution(self,star = 50):
