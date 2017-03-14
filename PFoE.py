@@ -16,7 +16,7 @@ class Robot:
         self.particle_distribution = [0 for i in range(particle)] #パーティクルの分布場所
         self.particle_weight = [1.0 / particle for i in range(particle)] #パーティクルの重み
         self.choice = choice #ロボットが取りうる選択肢の数
-        self.action = None #選択された行動
+        self.action = None  #選択された行動
         self.reward = None  #報酬値
         self.episode = [ [self.sensor,self.action,self.reward] ] #エピソード集合
         self.maximum = maximum #エピソード集合に保存されるイベント数の上限
@@ -104,7 +104,7 @@ class Robot:
                         self.particle_distribution[i] = ii
                         break
 
-    def equality_resampling(self):
+    def randomly_resampling(self):
         """
         処理:全てのパーティクルをエピソード中に均等にリサンプリングする
              全てのパーティクルの重みを均等にする
@@ -112,7 +112,7 @@ class Robot:
         戻り値: -
         """
         for i in range(self.particle_num):
-            self.particle_distribution[i] = i % len(self.episode) 
+            self.particle_distribution[i] = random.randint(0,len(self.episode) - 1) 
             self.particle_weight[i] = 1.0 / self.particle_num
 
     def decision_making(self):
