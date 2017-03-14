@@ -10,7 +10,7 @@ PFoEのための関数を提供するモジュール
 likelihood_function.pyの中で尤度関数の内容を定義
 """
 class Robot:
-    def __init__(self,sensor,choice,particle = 1000,maximum = 100,resetting = False,reduction = 0.0):
+    def __init__(self,sensor,choice,particle = 1000,maximum = 100,threshold = 0.0,step = 4,reduction = 0.0):
         self.sensor = [None for i in range(sensor)] #センサ値が入るリスト
         self.particle_num = particle #パーティクルの数
         self.particle_distribution = [0 for i in range(particle)] #パーティクルの分布場所
@@ -20,8 +20,9 @@ class Robot:
         self.reward = None  #報酬値
         self.episode = [ [self.sensor,self.action,self.reward] ] #エピソード集合
         self.maximum = maximum #エピソード集合に保存されるイベント数の上限
-        self.resetting = resetting #resettingを行うか否か
         self.alpha = 0.0 #各パーティクルの重みの平均
+        self.resetting_threshold = threshold #resettingを行うか否かを決定する閾値
+        self.resetting_step = step #何ステップをresettingに用いるか
         self.reduction_rate = reduction #辻褄のあわないエピソードをどの程度削減するか
 
     def add_event(self,sensor,action,reward):
@@ -53,25 +54,35 @@ class Robot:
     def sensor_update(self):
         """
         処理:全てのパーティクルについて、尤度に基づいて重みを更新する
-             新しい重みの平均でalphaを更新する
+             重みの平均値でalphaを更新する
+             alphaを用いて重みを正規化(すべてのパーティクルの重みの和が1)する
         引数: -
         戻り値: - 
         """
         likelihood = likelihood_function.func(self.sensor, self.episode) 
-        s = 0.0
         self.alpha = 0.0
 
         for i in range(self.particle_num):
             self.particle_weight[i] = self.particle_weight[i]\
                                        * likelihood[ self.particle_distribution[i] ]
-            s += self.particle_weight[i]
-
-        for i in range(self.particle_num):
-            if s != 0.0:
-                self.particle_weight[i] = self.particle_weight[i] / s
             self.alpha += self.particle_weight[i]
 
-        self.alpha /= self.particle_num
+        if self.alpha != 0.0:
+            for i in range(self.particle_num):
+                self.particle_weight[i] = self.particle_weight[i] / self.alpha
+        else:
+            for i in range(self.particle_num):
+                self.particle_weight[i] = 1.0 / self.particle_num
+
+    def retrospective_resetting(self):
+        """
+        処理:alphaがresetting_thresholdより小さい場合、回想に基づくリセッティングを行う。
+        引数:
+        戻り値:
+        """
+        if self.alpha < self.resetting_threshold:
+            print "hoge"
+            
 
     def particle_resampling(self):
         """
