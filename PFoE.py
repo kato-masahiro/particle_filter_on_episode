@@ -90,6 +90,7 @@ class Robot:
                 for ii in range( len(self.episode) ):
                     if self.episode[ii][1] != self.episode[-i][1] or self.episode[ii][2] != self.episode[-i][2]:
                         likelihood[i][ii] *= self.reduction_rate
+            print "reducted_likelihood:",likelihood
             # 各エピソードの重みを求める
             weight_of_episode = [ likelihood[0][i] for i in range( len(self.episode) ) ]
             print weight_of_episode
@@ -102,6 +103,19 @@ class Robot:
                 
             print "likelihood:",likelihood            
             print "weight_of_episide:",weight_of_episode
+
+            # パーティクルをランダムにリサンプリング
+            # 重みはweight_of_episodeで更新
+            s = 0.0
+            for i in range(self.particle_num):
+                self.particle_distribution[i] = random.randint(0,len(self.episode) - 1)
+                self.particle_weight[i] = weight_of_episode[ self.particle_distribution[i] ]
+                s += weight_of_episode[ self.particle_distribution[i] ]
+            # 重みを正規化
+            if s != 0.0:
+                self.particle_weight = [ self.particle_weight[i] / s for i in range[self.particle_num] ]
+            else
+                self.particle_weight = [ 1.0 / self.particle_num for i in range[self.particle_num] ]
             
     def particle_resampling(self):
         """
