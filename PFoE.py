@@ -81,14 +81,24 @@ class Robot:
         戻り値:
         """
         if self.alpha < self.resetting_threshold:
+            # センサ値および直近のいくつかのエピソードについて、尤度を求めておく
             likelihood = [ [ 0.0 for i in range( len(self.episode) ) ] for ii in range(self.resetting_step) ]
             likelihood[0] = likelihood_function.func(self.sensor, self.episode)
             for i in range(1,self.resetting_step):
                 likelihood[i] = likelihood_function.func(self.episode[-i][0], self.episode)
             for i in range(1,self.resetting_step):
                 for ii in range( len(self.episode) ):
-                    if self.episode[ii][1] != self.episode[-i][1] || self.episode[ii][2] != self.episode[-i][2]:
-                        likelihood[i][ii] *= reduction_rate
+                    if self.episode[ii][1] != self.episode[-i][1] or self.episode[ii][2] != self.episode[-i][2]:
+                        likelihood[i][ii] *= self.reduction_rate
+            # 各エピソードの重みを求める
+            weight_of_episode = [ likelihood[0][i] for i in range( len(self.episode) ) ]
+            for i in range(len(self.episode) ):
+                for ii in range(1,self.resetting_step):
+                    try:
+                        weight_of_episode *= 
+                    except:
+                        weight_of_episode *= 0 
+                
             print likelihood            
             
     def particle_resampling(self):
