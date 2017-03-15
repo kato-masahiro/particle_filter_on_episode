@@ -92,14 +92,16 @@ class Robot:
                         likelihood[i][ii] *= self.reduction_rate
             # 各エピソードの重みを求める
             weight_of_episode = [ likelihood[0][i] for i in range( len(self.episode) ) ]
-            for i in range(len(self.episode) ):
+            print weight_of_episode
+            for i in range( len(self.episode) ):
                 for ii in range(1,self.resetting_step):
                     try:
-                        weight_of_episode *= 
+                        weight_of_episode[-(i+1)] *= likelihood[ii][-(i+1) - ii]
                     except:
-                        weight_of_episode *= 0 
+                        weight_of_episode[-(i+1)] *= 0 
                 
-            print likelihood            
+            print "likelihood:",likelihood            
+            print "weight_of_episide:",weight_of_episode
             
     def particle_resampling(self):
         """
