@@ -76,11 +76,13 @@ class Robot:
 
     def retrospective_resetting(self):
         """
-        処理:alphaがresetting_thresholdより小さい場合、回想に基づく重みのリセッティングを行う。
+        処理:alphaがresetting_thresholdより小さく、かつ
+             episodeの数が充分存在している場合に
+             回想に基づく重みのリセッティングを行う。
         引数:
         戻り値:
         """
-        if self.alpha < self.resetting_threshold:
+        if self.alpha < self.resetting_threshold and len(self.episode) > self.resetting_step:
             # センサ値および直近のいくつかのエピソードについて、尤度を求めておく
             likelihood = [ [ 0.0 for i in range( len(self.episode) ) ] for ii in range(self.resetting_step) ]
             likelihood[0] = likelihood_function.func(self.sensor, self.episode)
@@ -114,7 +116,7 @@ class Robot:
             # 重みを正規化
             if s != 0.0:
                 self.particle_weight = [ self.particle_weight[i] / s for i in range[self.particle_num] ]
-            else
+            else:
                 self.particle_weight = [ 1.0 / self.particle_num for i in range[self.particle_num] ]
             
     def particle_resampling(self):
