@@ -28,7 +28,7 @@ class Robot:
     def update(self):
         """
         sensor_update,retrospective_resetting,particle_resamplingの内容を
-        一つにした
+        一つにした関数
         """
         # self.sensor とself.episodeを用いて、すべてのパーティクルの重みを更新する
         if(self.episode[0][0][0] != None):
@@ -45,12 +45,12 @@ class Robot:
         if self.alpha != 0.0:
             for i in range(self.particle_num):
                 self.particle_weight[i] = self.particle_weight[i] / self.alpha
-        else:
+        else:#パーティクルの重みがすべて0の時はランダムに再配置する
             for i in range(self.particle_num):
                 self.particle_distribution[i] = random.randint(0,len(self.episode) - 1)
                 self.particle_weight[i] = 1.0 / self.particle_num
 
-        # 条件を満たしている場合に回想に基づくリセッティングを行う。
+        # 条件を満たしている場合は回想に基づくリセッティングを行う。
         if self.alpha < self.resetting_threshold and len(self.episode) > self.resetting_step:
             # センサ値および直近のいくつかのエピソードについて、尤度を求めておく
             likelihood = [ [ 0.0 for i in range( len(self.episode) ) ] for ii in range(self.resetting_step) ]
@@ -110,7 +110,6 @@ class Robot:
 
     def add_event(self,sensor,action,reward):
         #ロボットに新しいイベントを追加し、尤度を削減し、パーティクルをスライドさせる
-
         """
         ロボットのエピソード集合に新しいイベントを追加する
         追加した結果、エピソード数の上限に達した場合は最も古いイベントを削除する
@@ -128,11 +127,10 @@ class Robot:
             del self.episode[0]
         """
         パーティクルが持つ重み(particle_weight[])について、
-        そのパーティクルが存在しているエピソードが最新のイベントと比較して矛盾している場合に、
+        そのパーティクルが存在しているエピソードが最新のイベントの行動・報酬と比較して矛盾している場合に
         係数(reduction_rate)を掛けて削減する
         """
         latest = len(self.episode) - 1
-        # 行動による削減
         for i in range(self.particle_num):
             if( self.episode[ self.particle_distribution[i] ][1] != self.episode[latest][1] \
                 or \
