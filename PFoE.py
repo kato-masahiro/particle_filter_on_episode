@@ -35,11 +35,11 @@ class Robot:
             likelihood = likelihood_function.func(self.sensor, self.episode) 
         else:
             likelihood = [ 1.0 for i in range( len(self.episode) ) ]
+
         self.alpha = 0.0
 
         for i in range(self.particle_num):
-            self.particle_weight[i] = self.particle_weight[i]\
-                                       * likelihood[ self.particle_distribution[i] ]
+            self.particle_weight[i] *= likelihood[ self.particle_distribution[i] ]
             self.alpha += self.particle_weight[i]
 
         if self.alpha != 0.0:
@@ -47,6 +47,7 @@ class Robot:
                 self.particle_weight[i] = self.particle_weight[i] / self.alpha
         else:
             for i in range(self.particle_num):
+                self.particle_distribution[i] = random.randint(0,len(self.episode) - 1)
                 self.particle_weight[i] = 1.0 / self.particle_num
 
         # 条件を満たしている場合に回想に基づくリセッティングを行う。
@@ -108,14 +109,11 @@ class Robot:
                         break
 
     def add_event(self,sensor,action,reward):
+        #ロボットに新しいイベントを追加し、尤度を削減し、パーティクルをスライドさせる
+
         """
-        add_eventの後にweight_recductionを追加した
-        """
-        """
-        処理:ロボットのエピソード集合に新しいイベントを追加する
-             追加した結果、エピソード数の上限に達した場合は最も古いイベントを削除する
-        引数:sensor[],action,reward
-        戻り値: - 
+        ロボットのエピソード集合に新しいイベントを追加する
+        追加した結果、エピソード数の上限に達した場合は最も古いイベントを削除する
         """
         l = []
         l.append(sensor)
@@ -128,11 +126,9 @@ class Robot:
 
         if( len(self.episode) > self.maximum ):
             del self.episode[0]
-
         """
         パーティクルが持つ重み(particle_weight[])について、
-        そのパーティクルが存在しているエピソードが、
-        最新のイベントと比較して矛盾している場合に、
+        そのパーティクルが存在しているエピソードが最新のイベントと比較して矛盾している場合に、
         係数(reduction_rate)を掛けて削減する
         """
         latest = len(self.episode) - 1
@@ -142,6 +138,12 @@ class Robot:
                 or \
             self.episode[ self.particle_distribution[i] ][2] != self.episode[latest][2] ):
                 self.particle_weight[i] *= self.reduction_rate
+        """
+        すべてのパーティクルの分布を一つずらす
+        """
+        for i in range(self.particle_num):
+            if self.particle_distribution[i] != (len(self.episode) - 1):
+                self.particle_distribution[i] += 1
 
     def decision_making(self):
         """
@@ -186,16 +188,6 @@ class Robot:
         seed = random.randint(0,mx_n-1)
         action = mx_list[seed]
         return action
-
-    def sliding(self):
-        """
-        処理:全てのパーティクルの分布をひとつずらす
-        引数:
-        戻り値:
-        """
-        for i in range(self.particle_num):
-            if self.particle_distribution[i] != (len(self.episode) - 1):
-                self.particle_distribution[i] += 1
 
     def see_distribution(self,star = 50):
         """
