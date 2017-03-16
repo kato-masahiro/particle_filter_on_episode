@@ -143,24 +143,6 @@ class Robot:
             self.episode[ self.particle_distribution[i] ][2] != self.episode[latest][2] ):
                 self.particle_weight[i] *= self.reduction_rate
 
-    def likeli_func(self):
-        """
-        尤度関数のテスト
-        """
-        l = likelihood_function.func(self.sensor,self.episode)
-        print "尤度:",l
-
-    def randomly_resampling(self):
-        """
-        処理:全てのパーティクルをエピソード中に均等にリサンプリングする
-             全てのパーティクルの重みを均等にする
-        引数: -
-        戻り値: -
-        """
-        for i in range(self.particle_num):
-            self.particle_distribution[i] = random.randint(0,len(self.episode) - 1) 
-            self.particle_weight[i] = 1.0 / self.particle_num
-
     def decision_making(self):
         """
         処理:パーティクルの分布から行動を決定して返す
