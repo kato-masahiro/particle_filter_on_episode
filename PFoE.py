@@ -25,41 +25,16 @@ class Robot:
         self.resetting_step = step #何ステップをresettingに用いるか
         self.reduction_rate = reduction #辻褄のあわないエピソードをどの程度削減するか
 
-    def add_event(self,sensor,action,reward):
+    def update(self):
         """
-        処理:ロボットのエピソード集合に新しいイベントを追加する
-             追加した結果、エピソード数の上限に達した場合は最も古いイベントを削除する
-        引数:sensor[],action,reward
-        戻り値: - 
+        sensor_update,retrospective_resetting,particle_resamplingの内容を
+        一つにした
         """
-        l = []
-        l.append(sensor)
-        l.append(action)
-        l.append(reward)
-        if(self.episode[0][1] is None):
-            self.episode[0] = l
+        # self.sensor とself.episodeを用いて、すべてのパーティクルの重みを更新する
+        if(self.episode[0][0][0] != None):
+            likelihood = likelihood_function.func(self.sensor, self.episode) 
         else:
-            self.episode.append(l)
-
-        if( len(self.episode) > self.maximum ):
-            del self.episode[0]
-
-    def likeli_func(self):
-        """
-        尤度関数のテスト
-        """
-        l = likelihood_function.func(self.sensor,self.episode)
-        print "尤度:",l
-
-    def sensor_update(self):
-        """
-        処理:全てのパーティクルについて、尤度に基づいて重みを更新する
-             重みの平均値でalphaを更新する
-             alphaを用いて重みを正規化(すべてのパーティクルの重みの和が1)する
-        引数: -
-        戻り値: - 
-        """
-        likelihood = likelihood_function.func(self.sensor, self.episode) 
+            likelihood = [ 1.0 for i in range( len(self.episode) ) ]
         self.alpha = 0.0
 
         for i in range(self.particle_num):
@@ -74,14 +49,7 @@ class Robot:
             for i in range(self.particle_num):
                 self.particle_weight[i] = 1.0 / self.particle_num
 
-    def retrospective_resetting(self):
-        """
-        処理:alphaがresetting_thresholdより小さく、かつ
-             episodeの数が充分存在している場合に
-             回想に基づく重みのリセッティングを行う。
-        引数:
-        戻り値:
-        """
+        # 条件を満たしている場合に回想に基づくリセッティングを行う。
         if self.alpha < self.resetting_threshold and len(self.episode) > self.resetting_step:
             # センサ値および直近のいくつかのエピソードについて、尤度を求めておく
             likelihood = [ [ 0.0 for i in range( len(self.episode) ) ] for ii in range(self.resetting_step) ]
@@ -92,19 +60,14 @@ class Robot:
                 for ii in range( len(self.episode) ):
                     if self.episode[ii][1] != self.episode[-i][1] or self.episode[ii][2] != self.episode[-i][2]:
                         likelihood[i][ii] *= self.reduction_rate
-            print "reducted_likelihood:",likelihood
             # 各エピソードの重みを求める
             weight_of_episode = [ likelihood[0][i] for i in range( len(self.episode) ) ]
-            print weight_of_episode
             for i in range( len(self.episode) ):
                 for ii in range(1,self.resetting_step):
                     try:
                         weight_of_episode[-(i+1)] *= likelihood[ii][-(i+1) - ii]
                     except:
                         weight_of_episode[-(i+1)] *= 0 
-                
-            print "likelihood:",likelihood            
-            print "weight_of_episide:",weight_of_episode
 
             # パーティクルをランダムにリサンプリング
             # 重みはweight_of_episodeで更新
@@ -115,17 +78,11 @@ class Robot:
                 s += weight_of_episode[ self.particle_distribution[i] ]
             # 重みを正規化
             if s != 0.0:
-                self.particle_weight = [ self.particle_weight[i] / s for i in range[self.particle_num] ]
+                self.particle_weight = [ self.particle_weight[i] / s for i in range(self.particle_num) ]
             else:
-                self.particle_weight = [ 1.0 / self.particle_num for i in range[self.particle_num] ]
-            
-    def particle_resampling(self):
-        """
-        処理:重みに基づきパーティクルをリサンプリングする
-             1 % のパーティクルはランダムにリサンプリングする
-        引数: - 
-        戻り値: -
-        """
+                self.particle_weight = [ 1.0 / self.particle_num for i in range(self.particle_num) ]
+
+        # 重みに基づきパーティクルをリサンプリングする
         weight_of_episode = [0.0 for i in range( len(self.episode) ) ]
 
         for i in range( len(self.episode) ):
@@ -149,6 +106,49 @@ class Robot:
                     if seed <= 0:
                         self.particle_distribution[i] = ii
                         break
+
+    def add_event(self,sensor,action,reward):
+        """
+        add_eventの後にweight_recductionを追加した
+        """
+        """
+        処理:ロボットのエピソード集合に新しいイベントを追加する
+             追加した結果、エピソード数の上限に達した場合は最も古いイベントを削除する
+        引数:sensor[],action,reward
+        戻り値: - 
+        """
+        l = []
+        l.append(sensor)
+        l.append(action)
+        l.append(reward)
+        if(self.episode[0][1] is None):
+            self.episode[0] = l
+        else:
+            self.episode.append(l)
+
+        if( len(self.episode) > self.maximum ):
+            del self.episode[0]
+
+        """
+        パーティクルが持つ重み(particle_weight[])について、
+        そのパーティクルが存在しているエピソードが、
+        最新のイベントと比較して矛盾している場合に、
+        係数(reduction_rate)を掛けて削減する
+        """
+        latest = len(self.episode) - 1
+        # 行動による削減
+        for i in range(self.particle_num):
+            if( self.episode[ self.particle_distribution[i] ][1] != self.episode[latest][1] \
+                or \
+            self.episode[ self.particle_distribution[i] ][2] != self.episode[latest][2] ):
+                self.particle_weight[i] *= self.reduction_rate
+
+    def likeli_func(self):
+        """
+        尤度関数のテスト
+        """
+        l = likelihood_function.func(self.sensor,self.episode)
+        print "尤度:",l
 
     def randomly_resampling(self):
         """
@@ -205,7 +205,7 @@ class Robot:
         action = mx_list[seed]
         return action
 
-    def particle_sliding(self):
+    def sliding(self):
         """
         処理:全てのパーティクルの分布をひとつずらす
         引数:
@@ -214,24 +214,6 @@ class Robot:
         for i in range(self.particle_num):
             if self.particle_distribution[i] != (len(self.episode) - 1):
                 self.particle_distribution[i] += 1
-
-    def weight_reduction(self):
-        """
-        処理:パーティクルが持つ重み(particle_weight[])について、
-             そのパーティクルが存在しているエピソードが、
-             最新のイベントと比較して矛盾している場合に、
-             係数(reduction_rate)を掛けて削減する
-             最新のイベントを追加した後、パーティクルをスライドさせる前に実行する
-        引数: - 
-        戻り値: -
-        """
-        latest = len(self.episode) - 1
-        # 行動による削減
-        for i in range(self.particle_num):
-            if( self.episode[ self.particle_distribution[i] ][1] != self.episode[latest][1] \
-                or \
-            self.episode[ self.particle_distribution[i] ][2] != self.episode[latest][2] ):
-                self.particle_weight[i] *= self.reduction_rate
 
     def see_distribution(self,star = 50):
         """
