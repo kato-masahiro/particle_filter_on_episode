@@ -7,7 +7,7 @@ import likelihood_function
 
 """
 PFoEのための関数を提供するモジュール
-likelihood_function.pyの中で尤度関数の内容を定義
+likelihood_function.pyで尤度関数の内容を定義
 """
 class Robot:
     def __init__(self,sensor,choice,particle = 1000,maximum = 100,threshold = 0.0,step = 4,reduction = 0.0):
@@ -27,10 +27,10 @@ class Robot:
 
     def update(self):
         """
-        sensor_update,retrospective_resetting,particle_resamplingの内容を
-        一つにした関数
+        すべてのパーティクルについて、尤度に基づいて重みを更新する
+        重みの平均値でself.alphaを更新する
+        self.alphaを用いて、重みを正規化(すべてのパーティクルの重みの和が1)する
         """
-        # self.sensor とself.episodeを用いて、すべてのパーティクルの重みを更新する
         if(self.episode[0][0][0] != None):
             likelihood = likelihood_function.func(self.sensor, self.episode) 
         else:
@@ -45,12 +45,16 @@ class Robot:
         if self.alpha != 0.0:
             for i in range(self.particle_num):
                 self.particle_weight[i] = self.particle_weight[i] / self.alpha
-        else:#パーティクルの重みがすべて0の時はランダムに再配置する
+        else:
+            #パーティクルの重みがすべて0の時はランダムに再配置する
             for i in range(self.particle_num):
                 self.particle_distribution[i] = random.randint(0,len(self.episode) - 1)
                 self.particle_weight[i] = 1.0 / self.particle_num
-
-        # 条件を満たしている場合は回想に基づくリセッティングを行う。
+        """
+        self.alphaがself.resetting_thresholdより小さく、かつ
+        self.episodeの数が充分存在している場合に
+        回想に基づくリセッティングを行う
+        """
         if self.alpha < self.resetting_threshold and len(self.episode) > self.resetting_step:
             # センサ値および直近のいくつかのエピソードについて、尤度を求めておく
             likelihood = [ [ 0.0 for i in range( len(self.episode) ) ] for ii in range(self.resetting_step) ]
@@ -82,8 +86,10 @@ class Robot:
                 self.particle_weight = [ self.particle_weight[i] / s for i in range(self.particle_num) ]
             else:
                 self.particle_weight = [ 1.0 / self.particle_num for i in range(self.particle_num) ]
-
-        # 重みに基づきパーティクルをリサンプリングする
+        """
+        重みに基づいてパーティクルをリサンプリングする
+        1%のパーティクルはランダムにリサンプリングする
+        """
         weight_of_episode = [0.0 for i in range( len(self.episode) ) ]
 
         for i in range( len(self.episode) ):
@@ -109,7 +115,6 @@ class Robot:
                         break
 
     def add_event(self,sensor,action,reward):
-        #ロボットに新しいイベントを追加し、尤度を削減し、パーティクルをスライドさせる
         """
         ロボットのエピソード集合に新しいイベントを追加する
         追加した結果、エピソード数の上限に達した場合は最も古いイベントを削除する
