@@ -1,7 +1,8 @@
-A python module for implementing a "Particle filter on Episode (PFoE)"
+Implementing a "Particle filter on Episode (PFoE)"
 ====
 
-Overview
+Python module for implementing a PFoE.
+PFoE algorithm was proposed by Ueda et al. in 2016 to let robots learn episodic tasks.
 
 ## Description
 
