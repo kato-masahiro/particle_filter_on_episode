@@ -1,5 +1,4 @@
-#Name  
- A python module for implementing a "Particle filter on Episode (PFoE)"
+A python module for implementing a "Particle filter on Episode (PFoE)"
 ====
 
 Overview
