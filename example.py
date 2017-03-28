@@ -13,7 +13,7 @@ robot = PFoE.Robot(sensor=4,choice=3)
 #you have to define threshold.
 robot = PFoE.Robot(sensor=4,choice=3,threshold=0.5)
 
-while 1:
+while True:
     #You somehow need to get sensors val.
     #The robot as defined above has 4 sensors,
     # then a suitable input is a list of for numbers.
