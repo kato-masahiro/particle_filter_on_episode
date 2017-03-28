@@ -6,7 +6,7 @@ Implementing a "Particle filter on Episode (PFoE)"
 In this repository,the Python module ```pfoe.py``` provides functions for implementing the PFoE algorithm.  
 
 ## Usage  
-```PFoE.py``` is the body of this module.  
+```pfoe.py``` is the body of this module.  
 Likelihood function is defined in ```likelihood_function.py``` then please edit this.  
 I showed concrete usage in ```example.py```. please refer to.
 
