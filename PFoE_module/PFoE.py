@@ -10,7 +10,7 @@ PFoEのための関数を提供するモジュール
 likelihood_function.pyで尤度関数の内容を定義
 """
 class Robot:
-    def __init__(self,sensor,choice,particle = 1000,maximum = 100,threshold = 0.0,step = 4,reduction = 0.0):
+    def __init__(self,sensor,choice,particle = 1000,limit = 100,threshold = 0.0,step = 4,reduction = 0.0):
         self.sensor = [None for i in range(sensor)] #センサ値が入るリスト
         self.particle_num = particle #パーティクルの数
         self.particle_distribution = [0 for i in range(particle)] #パーティクルの分布場所
@@ -19,7 +19,7 @@ class Robot:
         self.action = None  #選択された行動
         self.reward = None  #報酬値
         self.episode = [ [self.sensor,self.action,self.reward] ] #エピソード集合
-        self.maximum = maximum #エピソード集合に保存されるイベント数の上限
+        self.limit = limit #エピソード集合に保存されるイベント数の上限
         self.alpha = 0.0 #各パーティクルの重みの平均
         self.resetting_threshold = threshold #resettingを行うか否かを決定する閾値
         self.resetting_step = step #何ステップをresettingに用いるか
@@ -128,7 +128,7 @@ class Robot:
         else:
             self.episode.append(l)
 
-        if( len(self.episode) > self.maximum ):
+        if( len(self.episode) > self.limit ):
             del self.episode[0]
         """
         パーティクルが持つ重み(particle_weight[])について、
