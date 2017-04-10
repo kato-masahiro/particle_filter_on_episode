@@ -4,7 +4,7 @@
 クラスの定義と
 APIとしてユーザが用いる関数の定義
 """
-class Event
+class Event:
     def __init__(self):
         self.sensor = None
         self.action = None
@@ -12,7 +12,7 @@ class Event
 
 class Episode:
     def __init__(self,limit):
-        self.episode = []
+        self.sets = []
         self.limit = limit
     def setEvent(self,event):
         self.episode.append(event)
@@ -21,14 +21,14 @@ class Episode:
 
 class Particle:
     def __init__(self,particle):
-        self.particle_num = particle
-        self.particle_distribution = [0] * particle
-        self.particle_weight =  [1.0 / particle] * particle
+        self.num = particle
+        self.distribution = [0] * particle
+        self.weight =  [1.0 / particle] * particle
         self.alpha = 0.0
 
 class Robot:
     def __init__(self,sensor,choice,particle = 1000,limit = 100,threshold = 0.0,step = 4,reduction = 0.0):
-        self.event = Event(sensor)
+        self.event = Event()
         self.episode = Episode(limit)
         self.particle = Particle(particle)
 
