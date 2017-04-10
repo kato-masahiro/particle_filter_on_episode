@@ -4,6 +4,9 @@
 クラスの定義と
 APIとしてユーザが用いる関数の定義
 """
+
+import functions
+
 class Event:
     def __init__(self):
         self.sensor = None
@@ -41,19 +44,26 @@ class Robot:
         self.resetting_step = step               #何ステップをresettingに用いるか 
         self.reduction_rate = reduction          #辻褄のあわないエピソードをどの程度削減するか
 
-    def decision_making():
+    def decision_making(self,sensor_val):
         """
         引数:ロボットの獲得したセンサ値(1次元リスト)
-        戻り値:ロボットの選択した行動
+        戻り値: - 
         """
-        pass
+        self.particle = functions.sensor_update(sensor_val,self.event,self.episode,self.particle)
+        """
+        retrospective_resetting()
+        particle_resampling()
+        decision_making()
+        """
 
     def set_reward():
         """
         引数:ロボットが得た報酬(数値)
         戻り値:-
         """
-        pass
+        add_event()
+        weight_reduction()
+        particle_sliding()
 
     def see_distribution():
         """

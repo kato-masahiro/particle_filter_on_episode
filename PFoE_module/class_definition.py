@@ -9,7 +9,7 @@ class History:
         self.sensor_log = [[None]]
         self.action_log = [None]
         self.reward_log = [None]
-        
+
 class Particle:
     def __init__(self,particle):
         self.particle_num = particle
