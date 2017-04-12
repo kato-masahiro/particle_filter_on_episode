@@ -1,0 +1,2 @@
+script:
+    bash -e ./test/test_likelihood_func.sh
