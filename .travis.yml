@@ -1,2 +1,2 @@
 script:
-    bash -e ./test/test_likelihood_func.sh
+    bash -e ./test/test_likelihood_func.sh ./test/senso_val.txt
