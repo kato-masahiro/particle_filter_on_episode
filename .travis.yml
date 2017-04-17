@@ -1,2 +1,2 @@
 script:
-    sh -e ./test/test_likelihood_func/test.sh ./test/test_likelihood_func/senso_val.txt
+    sh -e ./test/test_likelihood_func/diff.sh
