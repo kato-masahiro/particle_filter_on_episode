@@ -1,3 +1,3 @@
 script:
-    bash -e /test/test_likelihood_func/test.sh /test/test_likelihood_func/senso_val.txt > result
+    bash -e ./test/test_likelihood_func/test.sh ./test/test_likelihood_func/senso_val.txt > result
     bash -e diff result ./test/test_likelihood_func/ref
