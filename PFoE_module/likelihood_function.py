@@ -12,7 +12,7 @@ def func(sensor,past_sensors):
     処理:センサ値のリスト(1×センサ数)と過去のセンサ値のリスト(センサ数×エピソード数)を受け取り、
          尤度のリスト(1×エピソード数)を返す
 
-    引数:sensor[],episode[]
+    引数:sensor[],past_sensors[[]]
 
     戻り値:likelihood[]
     """
@@ -23,6 +23,9 @@ def func(sensor,past_sensors):
     このループ内で尤度関数の内容を定義せよ
     """
     for i in range( len(past_sensors) ):
+        if len( past_sensors[i] ) != len(sensor):
+            print "* エラー *: センサ数が異なる(likelihood_func.py)"
+            exit(1)
         for ii in range( len(sensor) ):
             n[ii] += math.fabs( sensor[ii] - past_sensors[i][ii] )
         likelihood[i] = 0.5 ** sum(n)
