@@ -18,5 +18,8 @@ do
     echo sensor: "$sen"
     echo past: "$past"
     echo likelihood:
-    echo "$sen",[ "$past" ] | python ../../PFoE_module/functions/likelihood_function.py
+    echo "$sen",[ "$past" ] | python ../../PFoE_module/functions/likelihood_function.py >> result
 done
+
+diff result ref
+echo $?
