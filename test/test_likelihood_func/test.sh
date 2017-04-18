@@ -16,6 +16,6 @@ do
     sen=$(sed -n "$n"p sensor_val.txt)
     echo "$sen"
     echo "$past"
-    echo "$sen",[ "$past" ] | python ../../PFoE_module/functions/likelihood_function.py
+    echo "$sen",[ "$past" ] | python ./PFoE_module/functions/likelihood_function.py
     echo 
 done
