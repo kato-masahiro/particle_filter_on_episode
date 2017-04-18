@@ -13,7 +13,7 @@ past=$(cat $1 | tr '\n' ',' | sed -e 's/,$//') #センサ値の改行をカン�
 
 for n in $(seq 1 $input_num)
 do
-    sen=$(sed -n "$n"p sensor_val.txt)
+    sen=$(sed -n "$n"p ./test/test_likelihood_func/sensor_val.txt)
     echo "$sen"
     echo "$past"
     echo "$sen",[ "$past" ] | python ./PFoE_module/functions/likelihood_function.py
