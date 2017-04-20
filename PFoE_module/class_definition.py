@@ -1,17 +1,19 @@
 #coding:utf-8
 
+import copy
+
 class Event:
     def __init__(self):
-        sensor = None
-        action = None
-        reward = None
+        self.sensor = None
+        self.action = None
+        self.reward = None
 
 class Episode:
     def __init__(self,limit):
         self.sets = []
         self.limit = limit
     def setEvent(self,event):
-        self.sets.append(event)
+        self.sets.append(copy.deepcopy(event))
     def getEpisode(self):
         return self.sets
 
