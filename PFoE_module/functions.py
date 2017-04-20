@@ -1,7 +1,7 @@
 #coding:utf-8
 import likelihood_function
 
-def func(self,sensor_val,episode,particle):
+def sensor_update(self,sensor_val,episode,particle):
     """
     処理:全てのパーティクルについて、尤度に基づいて重みを更新する
          重みの平均値でalphaを更新する
