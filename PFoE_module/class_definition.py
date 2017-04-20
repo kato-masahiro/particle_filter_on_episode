@@ -2,9 +2,9 @@
 
 class Event:
     def __init__(self):
-        self.sensor = None
-        self.action = None
-        self.reward = None
+        sensor = None
+        action = None
+        reward = None
 
 class Episode:
     def __init__(self,limit):
