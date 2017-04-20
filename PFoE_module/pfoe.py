@@ -4,9 +4,7 @@
 クラスの定義と
 APIとしてユーザが用いる関数の定義
 """
-import sys
-sys.path.append("./functions")
-import likelihood_function
+from likelihood_function import func
 
 class Event:
     def __init__(self):

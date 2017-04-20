@@ -1,7 +1,7 @@
 #coding:utf-8
 import likelihood_function
 
-def sensor_update(self,sensor_val,episode,particle):
+def sensor_update(sensor_val,episode,particle):
     """
     処理:全てのパーティクルについて、尤度に基づいて重みを更新する
          重みの平均値でalphaを更新する
@@ -14,23 +14,24 @@ def sensor_update(self,sensor_val,episode,particle):
     if len(episode.sets) == 0: #エピソード集合がまだない場合
         return particle
     else:
-        for i in range(episode.sets):
-            sensor_set.append(episode.sets.[i].sensor)
+        print len(episode.sets), "個のエピソード"
+        for i in range(len(episode.sets)):
+            print episode.sets[i].sensor,"を追加しました"
+            sensor_set.append(episode.sets[i].sensor)
+
+    print sensor_set
 
     likelihood = likelihood_function.func(sensor_val,sensor_set) 
     particle.alpha = 0.0
 
     for i in range(particle.num):
         particle.weight[i] = particle.weight[i] * likelihood[ particle.distribution[i] ]
-        particle.alpha += self.particle_weight[i]
+        particle.alpha += particle.weight[i]
 
     if particle.alpha != 0.0:
         for i in range(particle.num):
             particle.weight[i] = particle.weight[i] / particle.alpha
     else:
         for i in range(particle.num):
-            self.particle_weight[i] = 1.0 / self.particle_num
+            particle_weight[i] = 1.0 / particle_num
     return particle
-
-if __name__=='__main__':
-    pass
