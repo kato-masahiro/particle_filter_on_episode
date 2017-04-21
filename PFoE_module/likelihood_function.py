@@ -2,7 +2,7 @@
 
 import math
 
-def func(sensor,past_sensors):
+def likelihood_function(sensor,past_sensors):
     """
     概要:尤度関数を定義する.
          過去のエピソードで取得されたセンサ値と、現在取得したセンサ値
