@@ -1,5 +1,5 @@
 #coding:utf-8
-import likelihood_function
+from likelihood_function import likelihood_function
 
 def sensor_update(sensor_val,episode,particle):
     """
@@ -17,7 +17,7 @@ def sensor_update(sensor_val,episode,particle):
         for i in range(len(episode.sets)):
             sensor_set.append(episode.sets[i].sensor)
 
-    likelihood = likelihood_function.func(sensor_val,sensor_set) 
+    likelihood = likelihood_function(sensor_val,sensor_set) 
     particle.alpha = 0.0
 
     for i in range(particle.num):
@@ -34,17 +34,19 @@ def sensor_update(sensor_val,episode,particle):
     return particle
 
 def retrospective_resetting()
-    """
-    self.alphaがself.resetting_thresholdより小さく、かつ
-    self.episodeの数が充分存在している場合に
-    回想に基づくリセッティングを行う
-    """
+    処理：
+        Particle.alphaがRobot.resetting_thresholdより小さく、
+        かつ
+        Robot.Episode.sets[] の数が充分存在している場合
+        回想に基づくリセッティングを行う
+    引数: particleクラス,episodeクラス,resetting_threshod,resetting_step
+    戻り値:
     if self.alpha < self.resetting_threshold and len(self.episode) > self.resetting_step:
         # センサ値および直近のいくつかのエピソードについて、尤度を求めておく
         likelihood = [ [ 0.0 for i in range( len(self.episode) ) ] for ii in range(self.resetting_step) ]
-        likelihood[0] = likelihood_function.func(self.sensor, self.episode)
+        likelihood[0] = likelihood_function(self.sensor, self.episode)
         for i in range(1,self.resetting_step):
-            likelihood[i] = likelihood_function.func(self.episode[-i][0], self.episode)
+            likelihood[i] = likelihood_function(self.episode[-i][0], self.episode)
         for i in range(1,self.resetting_step):
             for ii in range( len(self.episode) ):
                 if self.episode[ii][1] != self.episode[-i][1] or self.episode[ii][2] != self.episode[-i][2]:
