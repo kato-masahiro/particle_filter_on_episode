@@ -1,5 +1,4 @@
 #coding:utf-8
-
 import copy
 
 class Event:
@@ -8,27 +7,27 @@ class Event:
         self.action = None
         self.reward = None
 
-class Episode:
+class Episodes:
     def __init__(self,limit):
-        self.sets = []
+        self.set = []
         self.limit = limit
     def setEvent(self,event):
-        self.sets.append(copy.deepcopy(event))
+        self.set.append(copy.deepcopy(event))
     def getEpisode(self):
-        return self.sets
+        return self.set
 
-class Particle:
-    def __init__(self,particle):
-        self.num = particle
-        self.distribution = [0] * particle
-        self.weight =  [1.0 / particle] * particle
+class Particles:
+    def __init__(self,particle_num):
+        self.num = particle_num
+        self.distribution = [0] * particle_num
+        self.weight =  [1.0 / particle_num ] * particle_num
         self.alpha = 0.0
 
 class Robot:
-    def __init__(self,sensor,choice,particle = 1000,limit = 100,threshold = 0.0,step = 4,reduction = 0.0):
+    def __init__(self,sensor,choice,particle_num = 1000,limit = 100,threshold = 0.0,step = 4,reduction = 0.0):
         self.event = Event()
-        self.episode = Episode(limit)
-        self.particle = Particle(particle)
+        self.episodes = Episodes(limit)
+        self.particles = Particles(particle_num)
 
         self.sensor = [None] * sensor            #ロボットの得たセンサ値
         self.action = None                       #ロボットが選択した行動
