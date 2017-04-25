@@ -9,13 +9,13 @@ def sensor_update(sensor_val,episodes,particles):
     引数: センサ値、エピソードクラス、パーティクルクラス
     戻り値: particlesクラス
     """
-    # episodes.setsの中のセンサ値集合をまとめる
+    # episodes.eventsの中のセンサ値集合をまとめる
     sensor_set = []
-    if len(episodes.sets) == 0: #エピソード集合がまだない場合
+    if len(episodes.events) == 0: #エピソード集合がまだない場合
         return particles
     else:
-        for i in range(len(episodes.sets)):
-            sensor_set.append(episodes.sets[i].sensor)
+        for i in range(len(episodes.events)):
+            sensor_set.append(episodes.events[i].sensor)
 
     likelihood = likelihood_function(sensor_val,sensor_set) 
     particles.alpha = 0.0
@@ -49,7 +49,7 @@ def sensor_update(sensor_val,episodes,particles):
 #       likelihood = [ [ 0.0 for i in range( len(self.episodes) ) ] for ii in range(self.resetting_step) ]
 #       likelihood[0] = likelihood_function(self.sensor, self.episodes)
 #       for i in range(1,self.resetting_step):
-#           likelihood[i] = likelihood_function(self.episodes.sets[].sensor, self.episode)
+#           likelihood[i] = likelihood_function(self.episodes.events[].sensor, self.episode)
 #       for i in range(1,self.resetting_step):
 #           for ii in range( len(self.episodes) ):
 #               if self.episodes[ii][1] != self.episode[-i][1] or self.episode[ii][2] != self.episode[-i][2]:

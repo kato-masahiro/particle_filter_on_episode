@@ -9,12 +9,12 @@ class Event:
 
 class Episodes:
     def __init__(self,limit):
-        self.set = []
+        self.events = []
         self.limit = limit
     def setEvent(self,event):
-        self.set.append(copy.deepcopy(event))
+        self.events.append(copy.deepcopy(event))
     def getEpisode(self):
-        return self.set
+        return self.events
 
 class Particles:
     def __init__(self,particle_num):
