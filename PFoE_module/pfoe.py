@@ -6,28 +6,6 @@ APIとしてユーザが用いる関数の定義
 """
 from likelihood_function import func
 
-class Event:
-    def __init__(self):
-        self.sensor = None
-        self.action = None
-        self.reward = None
-
-class Episode:
-    def __init__(self,limit):
-        self.sets = []
-        self.limit = limit
-    def setEvent(self,event):
-        self.sets.append(event)
-    def getEpisode(self):
-        return self.sets
-
-class Particle:
-    def __init__(self,particle):
-        self.num = particle
-        self.distribution = [0] * particle
-        self.weight =  [1.0 / particle] * particle
-        self.alpha = 0.0
-
 class Robot:
     def __init__(self,sensor,choice,particle = 1000,limit = 100,threshold = 0.0,step = 4,reduction = 0.0):
         self.event = Event()
@@ -54,8 +32,8 @@ class Robot:
         4. パーティクルの分布に基づき、最善と思われる行動を求める(decision_making)
         """
         self.particle = functions.sensor_update(sensor_val,self.event,self.episode,self.particle)
+        self.particle = retrospective_resetting()
         """
-        retrospective_resetting()
         particle_resampling()
         decision_making()
         """
