@@ -1,4 +1,5 @@
 #coding:utf-8
+import random
 from likelihood_function import likelihood_function
 
 def sensor_update(sensor_val,episodes,particles):
@@ -54,9 +55,8 @@ def retrospective_resetting(particles,episodes,resetting_threshold,resetting_ste
         for i in range(1, resetting_step):
             likelihood[i] = likelihood_function(episodes.events[-i].sensor, sensor_set)
         print likelihood
-            ### ここまでやりました
 
-        # ↓ ここでやっている処理の意味がよくわからない (尤度の削減？)
+        # ↓ ここでやっている処理は必要ない?(尤度の削減をやっている)
         #for i in range(1, resetting_step):
         #    for ii in range( len(episodes.events) ):
         #        if episodes[ii][1] != self.episode[-i][1] or self.episode[ii][2] != self.episode[-i][2]:
@@ -70,16 +70,21 @@ def retrospective_resetting(particles,episodes,resetting_threshold,resetting_ste
                     weight_of_episodes[-(i+1)] *= likelihood[ii][-(i+1) - ii]
                 except:
                     weight_of_episodes[-(i+1)] *= 0 
+        print weight_of_episodes
+        #↑ weight_of_episodeは適切に求めることができていることは確認した
 
-        # パーティクルをランダムにリサンプリング
-        # 重みはweight_of_episodesで更新
-#       s = 0.0
-#       for i in range(self.particles_num):
-#           self.particles_distribution[i] = random.randint(0,len(self.episodes) - 1)
-#           self.particles_weight[i] = weight_of_episodes[ self.particles_distribution[i] ]
-#           s += weight_of_episodes[ self.particles_distribution[i] ]
-#       # 重みを正規化
-#       if s != 0.0:
-#           self.particles_weight = [ self.particles_weight[i] / s for i in range(self.particles_num) ]
-#       else:
-#           self.particles_weight = [ 1.0 / self.particles_num for i in range(self.particles_num) ]
+        # パーティクルをランダムにリサンプリングし、その後重みをweight_of_episodesで更新する
+        s = 0.0
+
+        print "len(episodes.events):",len(episodes.events)
+        for i in range(particles.num):
+            particles.distribution[i] = random.randint(0,len(episodes.events) - 1)
+            particles.weight[i] = weight_of_episodes[ particles.distribution[i] ]
+            s += weight_of_episodes[ particles.distribution[i] ]
+        # 重みを正規化
+        if s != 0.0:
+            particles.weight = [ particles.weight[i] / s for i in range(particles.num) ]
+        else:
+            particles.weight = [ 1.0 / particles.num for i in range(particles.num) ]
+
+    return particles
