@@ -71,11 +71,9 @@ def retrospective_resetting(particles,episodes,resetting_threshold,resetting_ste
                 except:
                     weight_of_episodes[-(i+1)] *= 0 
         print weight_of_episodes
-        #↑ weight_of_episodeは適切に求めることができていることは確認した
 
         # パーティクルをランダムにリサンプリングし、その後重みをweight_of_episodesで更新する
         s = 0.0
-
         print "len(episodes.events):",len(episodes.events)
         for i in range(particles.num):
             particles.distribution[i] = random.randint(0,len(episodes.events) - 1)
