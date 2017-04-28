@@ -34,9 +34,9 @@ class Robot:
         self.particle = functions.sensor_update(sensor_val,self.event,self.episode,self.particle)
         self.particle = retrospective_resetting(self.particles, self.episodes, self.resetting_threshold, self.resetting_step, sensor_val)
         self.particle = particle_resampling( self.particles,len(self.episodes.events) )
-        """
-        decision_making()
-        """
+        action = decision_making()
+
+        return action
 
     def set_reward():
         """

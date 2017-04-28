@@ -118,3 +118,50 @@ def particles_resampling(particles,events_num):
                     particles.distribution[i] = ii
                     break
     return particles
+
+def decision_making(episodes,particles,choice):
+    """
+    処理:パーティクルの分布から行動を決定して返す
+         episodesがまだ無い場合には適当なものを返す
+    引数: episodesクラス,particlesクラス,選択肢の数
+    戻り値: action
+    """
+    if(len(episodes.events) == 0):
+        return random.randint(0,choice - 1)
+
+    vote = [0.0] * particles.num
+    for i in range(particles.num):
+        distance = 0
+        non_zero_reward = 0.0
+        for l in range(0, len(episodes.events) - particles.distribution[i]):
+            distance += 1
+            if episodes.events[particles.distribution[i] +l ].reward != 0:
+                non_zero_reward = episodes.events[particles.distribution[i] +l].reward
+                break
+        if non_zero_reward != 0:
+            vote[i] = non_zero_reward / distance
+        else:
+            vote[i] = 0.0
+    print vote
+
+    # 各選択肢に投票させる
+    got = [0.0] * choice #各選択肢が持つ得票数
+    for p in range(particles.num):
+        for g in range( len(got) ):
+            if episodes.events[ particles.distribution[p] ].action == g:
+                got[g] += vote[p]
+                break
+
+    #最大の評価を持つ選択肢を返す
+    #最大値を持つ選択肢が複数存在する場合は、その中からランダムに返す
+    mx = max(got)
+    mx_n = 0 #有効な選択肢が幾つあるか
+    mx_list = [0] * choice #有効な選択肢はどれか
+    for i in range(choice):
+        if got[i] == mx:
+            mx_list[mx_n] = i
+            mx_n += 1
+    seed = random.randint(0,mx_n-1)
+    action = mx_list[seed]
+    print action
+    #return action
