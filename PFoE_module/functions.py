@@ -88,3 +88,35 @@ def retrospective_resetting(particles,episodes,resetting_threshold,resetting_ste
             particles.weight = [ 1.0 / particles.num for i in range(particles.num) ]
 
     return particles
+
+def particles_resampling(particles,events_num):
+    """
+    処理：各パーティクルの重みの合計値に基づいて再配置を行う
+          1%の確率でランダムに再配置する
+    引数: particlesクラス,イベント数
+    戻り値: particlesクラス 
+    """
+    weight_of_episode = [0.0] * events_num
+
+    for i in range(events_num):
+        for ii in range(particles.num):
+            if particles.distribution[ii] == i:
+                weight_of_episode[i] += particles.weight[ii]
+
+    if sum(weight_of_episode) == 0.0:
+        for i in range(events_num):
+            weight_of_episode[i] = 1.0 / events_num
+
+    for i in range(particles.num):
+        seed = random.randint(1,100)
+        if seed == 1:
+            particles.distribution[i] = random.randint(0,events_num - 1)
+        else:
+            seed = random.randint(1,10000)
+            seed = float(seed) / 10000
+            for ii in range(events_num):
+                seed -= weight_of_episode[ii]
+                if seed <= 0:
+                    particles.distribution[i] = ii
+                    break
+    return particles

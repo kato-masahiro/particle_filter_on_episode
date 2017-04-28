@@ -28,13 +28,13 @@ class Robot:
         処理: 
         1. 受け取ったセンサ値を用いて、各パーティクルの尤度を更新する(sensor_update)
         2. パーティクルの合計値がthreshold以下の場合には、回想による尤度のリセットを行う(retrospective_resetting)
-        3. 尤度に基づき、パーティクルのリサンプリングを行う(particle_resampling)
+        3. 重みに基づき、パーティクルのリサンプリングを行う(particle_resampling)
         4. パーティクルの分布に基づき、最善と思われる行動を求める(decision_making)
         """
         self.particle = functions.sensor_update(sensor_val,self.event,self.episode,self.particle)
-        self.particle = retrospective_resetting()
+        self.particle = retrospective_resetting(self.particles, self.episodes, self.resetting_threshold, self.resetting_step, sensor_val)
+        self.particle = particle_resampling( self.particles,len(self.episodes.events) )
         """
-        particle_resampling()
         decision_making()
         """
 
