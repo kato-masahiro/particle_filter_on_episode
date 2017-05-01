@@ -1,4 +1,9 @@
 #coding:utf-8
+
+"""
+functions.py
+    pfoe.pyのために,必要な関数を提供する
+"""
 import random
 from likelihood_function import likelihood_function
 
@@ -12,6 +17,7 @@ def sensor_update(sensor_val,episodes,particles):
     """
     # episodes.eventsの中のセンサ値集合をまとめる
     sensor_set = []
+
     if len(episodes.events) == 0: #エピソード集合がまだない場合
         return particles
     else:
@@ -54,7 +60,7 @@ def retrospective_resetting(particles,episodes,resetting_threshold,resetting_ste
         likelihood[0] = likelihood_function(sensor_val, sensor_set)
         for i in range(1, resetting_step):
             likelihood[i] = likelihood_function(episodes.events[-i].sensor, sensor_set)
-        # print likelihood
+        ### print likelihood
 
         # ↓ ここでやっている処理は必要ない?(尤度の削減をやっている)
         #for i in range(1, resetting_step):
@@ -70,11 +76,11 @@ def retrospective_resetting(particles,episodes,resetting_threshold,resetting_ste
                     weight_of_episodes[-(i+1)] *= likelihood[ii][-(i+1) - ii]
                 except:
                     weight_of_episodes[-(i+1)] *= 0 
-        # print weight_of_episodes
+        ### print weight_of_episodes
 
         # パーティクルをランダムにリサンプリングし、その後重みをweight_of_episodesで更新する
         s = 0.0
-        #print "len(episodes.events):",len(episodes.events)
+        ### print "len(episodes.events):",len(episodes.events)
         for i in range(particles.num):
             particles.distribution[i] = random.randint(0,len(episodes.events) - 1)
             particles.weight[i] = weight_of_episodes[ particles.distribution[i] ]
@@ -143,7 +149,7 @@ def decision_making(episodes,particles,choice):
             vote[i] = non_zero_reward / distance
         else:
             vote[i] = 0.0
-    # print vote
+    ### print "vote:",vote
 
     # 各選択肢に投票させる
     got = [0.0] * choice #各選択肢が持つ得票数
@@ -164,7 +170,7 @@ def decision_making(episodes,particles,choice):
             mx_n += 1
     seed = random.randint(0,mx_n-1)
     action = mx_list[seed]
-    # print action
+    ### print "action:",action
     return action
 
 def set_event(sensor,action,reward_val,event,episodes):

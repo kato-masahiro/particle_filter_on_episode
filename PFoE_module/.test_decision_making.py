@@ -37,4 +37,4 @@ robot1.event.action = 0
 robot1.event.reward = -1.0
 robot1.episodes.setEvent(robot1.event)
 
-decision_making(robot1.episodes,robot1.particles,robot1.choice_num)
+action = decision_making(robot1.episodes,robot1.particles,robot1.choice_num)

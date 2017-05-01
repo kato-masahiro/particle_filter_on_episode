@@ -3,9 +3,9 @@
 functionモジュールのparticle_resampling関数をテストする
 """
 from functions import particles_resampling 
-import class_definition 
+import pfoe
 
-robot1 = class_definition.Robot(sensor=4,choice=3,particle_num=100)
+robot1 = pfoe.Robot(sensor=4,choice=3,particle_num=100)
 
 #case1:パーティクルの分布・重みは等分
 for i in range(100):
