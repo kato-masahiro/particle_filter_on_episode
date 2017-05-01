@@ -38,7 +38,7 @@ def set_reward(self,reward_val):
       その重みを削減する(weight_reduce)
     3.すべてのパーティクルの分布を一つずらす(particle_slie)
     """
-    add_event(self.sensor,reward_val,self.action,self.events,self.episodes,)
+    set_event(self.sensor,reward_val,self.action,self.events,self.episodes)
     weight_reduction()
     particle_sliding()
     pass

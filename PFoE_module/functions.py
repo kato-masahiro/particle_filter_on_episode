@@ -166,33 +166,30 @@ def decision_making(episodes,particles,choice):
     print action
     return action
 
-def set_event(events):
+def set_event(self.sensor,reward_val,self.action,events,sels.episodes):
     """
     処理:
         ロボットのエピソード集合に新しいイベントを追加する
         追加した結果、エピソード数の上限に達した場合は最も古いイベントを削除する
-    引数: eventクラス,episodesクラス
+    引数:センサ値、報酬値、行動、 eventクラス,episodesクラス
     戻り値: episodesクラス
     """
-    l = []
-    l.append(sensor)
-    l.append(action)
-    l.append(reward)
-    if(self.episode[0][1] is None):
-        self.episode[0] = l
-    else:
-        self.episode.append(l)
+    event.sensor = sensor
+    event.action = action
+    event.reward = reward_val
 
-    if( len(self.episode) == self.limit ):
-        del self.episode[0]
+    episodes.setEvent(event)
 
-def weight_reduce():
+    if( len(episodes.events) == episodes.limit+1 ):
+        del episodes.events[0]
+
+def weight_reduce(self.episodes):
     """
     パーティクルが持つ重み(particle_weight[])について、
     そのパーティクルが存在しているエピソードが最新のイベントの行動・報酬と比較して矛盾している場合に
     係数(reduction_rate)を掛けて削減する
     """
-    latest = len(self.episode) - 1
+    latest = len(episode.events) - 1
     for i in range(self.particle_num):
         if( self.episode[ self.particle_distribution[i] ][1] != self.episode[latest][1] \
             or \
