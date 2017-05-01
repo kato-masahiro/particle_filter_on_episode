@@ -94,29 +94,30 @@ def particles_resampling(particles,events_num):
     引数: particlesクラス,イベント数
     戻り値: particlesクラス 
     """
-    weight_of_episode = [0.0] * events_num
+    if events_num > 0:
+        weight_of_episode = [0.0] * events_num
 
-    for i in range(events_num):
-        for ii in range(particles.num):
-            if particles.distribution[ii] == i:
-                weight_of_episode[i] += particles.weight[ii]
-
-    if sum(weight_of_episode) == 0.0:
         for i in range(events_num):
-            weight_of_episode[i] = 1.0 / events_num
+            for ii in range(particles.num):
+                if particles.distribution[ii] == i:
+                    weight_of_episode[i] += particles.weight[ii]
 
-    for i in range(particles.num):
-        seed = random.randint(1,100)
-        if seed == 1:
-            particles.distribution[i] = random.randint(0,events_num - 1)
-        else:
-            seed = random.randint(1,10000)
-            seed = float(seed) / 10000
-            for ii in range(events_num):
-                seed -= weight_of_episode[ii]
-                if seed <= 0:
-                    particles.distribution[i] = ii
-                    break
+        if sum(weight_of_episode) == 0.0:
+            for i in range(events_num):
+                weight_of_episode[i] = 1.0 / events_num
+
+        for i in range(particles.num):
+            seed = random.randint(1,100)
+            if seed == 1:
+                particles.distribution[i] = random.randint(0,events_num - 1)
+            else:
+                seed = random.randint(1,10000)
+                seed = float(seed) / 10000
+                for ii in range(events_num):
+                    seed -= weight_of_episode[ii]
+                    if seed <= 0:
+                        particles.distribution[i] = ii
+                        break
     return particles
 
 def decision_making(episodes,particles,choice):
@@ -201,7 +202,7 @@ def weight_reduce(episodes,particles,reduction_rate):
             particles.weight[i] *= reduction_rate
     return particles
 
-def particle_sliding(particles,episodes):
+def particles_slide(particles,episodes):
     """
     処理: すべてのパーティクルの分布を正方向に一つずらす
     引数: particlesクラス、episodesクラス
