@@ -183,10 +183,10 @@ def set_event(events):
     else:
         self.episode.append(l)
 
-    if( len(self.episode) > self.limit ):
+    if( len(self.episode) == self.limit ):
         del self.episode[0]
 
-def weight_reduction():
+def weight_reduce():
     """
     パーティクルが持つ重み(particle_weight[])について、
     そのパーティクルが存在しているエピソードが最新のイベントの行動・報酬と比較して矛盾している場合に

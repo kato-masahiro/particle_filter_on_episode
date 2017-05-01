@@ -16,21 +16,31 @@ def decision_making(self,sensor_val):
     3. 重みに基づき、パーティクルのリサンプリングを行う(particle_resampling)
     4. パーティクルの分布に基づき、最善と思われる行動を求める(decision_making)
     """
+    if(len(sensor_val) != self.sensor):
+        self.sensor = sensor_val
+    else:
+        print "Error: Incorrect number of sensor values"
+        exit(1)
     self.particle = functions.sensor_update(sensor_val,self.event,self.episode,self.particle)
     self.particle = retrospective_resetting(self.particles, self.episodes, self.resetting_threshold, self.resetting_step, sensor_val)
     self.particle = particle_resampling( self.particles,len(self.episodes.events) )
-    action = decision_making()
+    self.action = decision_making()
 
-    return action
+    return self.action
 
-def set_reward():
+def set_reward(self,reward_val):
     """
     引数:ロボットが得た報酬(数値)
     戻り値:-
-    add_event()
+    処理: 
+    1.最新のイベントをepisodes.eventsにアペンドする(set_event)
+    2.各パーティクルが存在しているエピソードが最新のものと比較して矛盾している場合
+      その重みを削減する(weight_reduce)
+    3.すべてのパーティクルの分布を一つずらす(particle_slie)
+    """
+    add_event(self.sensor,reward_val,self.action,self.events,self.episodes,)
     weight_reduction()
     particle_sliding()
-    """
     pass
 
 def see_distribution():

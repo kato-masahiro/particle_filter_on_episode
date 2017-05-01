@@ -24,7 +24,7 @@ class Particles:
         self.alpha = 0.0
 
 class Robot:
-    def __init__(self,sensor,choice,particle_num = 1000,limit = 100,threshold = 0.0,step = 4,reduction = 0.0):
+    def __init__(self,sensor,choice,particle_num = 1000,limit = -1,threshold = 0.0,step = 4,reduction = 0.0):
         self.event = Event()
         self.episodes = Episodes(limit)
         self.particles = Particles(particle_num)
