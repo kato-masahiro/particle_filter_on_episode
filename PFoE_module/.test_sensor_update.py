@@ -12,7 +12,7 @@ robot2 = class_definition.Robot(sensor=4,choice=3,particle_num=20) #エピソー
 robot3 = class_definition.Robot(sensor=4,choice=3,particle_num=10) #エピソードの重みがすべて0の場合のチェック
 
 robot1.particles.distribution=[0,1,2,0,1,2,0,1,2,0,1,2]
-robot1.particles.weight = [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]
+robot1.particles.weight = [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]
 
 robot3.particles.distribution=[0,1,2,0,1,2,0,1,2,0]
 robot3.particles.weight = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]

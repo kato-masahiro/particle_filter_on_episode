@@ -3,8 +3,52 @@
 """
 APIとしてユーザが用いる関数を提供する
 """
+import copy
 from likelihood_function import likelihood_function
-import class_definition
+from functions import sensor_update
+from functions import retrospective_resetting
+from functions import particles_resampling
+from functions import decision_making
+from functions import set_event
+from functions import weight_reduce
+from functions import particle_sliding
+
+class Event:
+    def __init__(self):
+        self.sensor = None
+        self.action = None
+        self.reward = None
+
+class Episodes:
+    def __init__(self,limit):
+        self.events = []
+        self.limit = limit
+    def setEvent(self,event):
+        self.events.append(copy.deepcopy(event))
+    def getEpisode(self):
+        return self.events
+
+class Particles:
+    def __init__(self,particle_num):
+        self.num = particle_num
+        self.distribution = [0] * particle_num
+        self.weight =  [1.0 / particle_num ] * particle_num
+        self.alpha = 0.0
+
+class Robot:
+    def __init__(self,sensor,choice,particle_num = 1000,limit = -1,threshold = 0.0,step = 4,reduction = 0.0):
+        self.event = Event()
+        self.episodes = Episodes(limit)
+        self.particles = Particles(particle_num)
+
+        self.sensor = [None] * sensor            #ロボットの得たセンサ値
+        self.action = None                       #ロボットが選択した行動
+        self.reward = None                       #ロボットの得た報酬値
+        self.choice_num = choice                 #ロボットが取りうる選択肢の数
+
+        self.resetting_threshold = threshold     #resettingを行うか否かを決定する閾値
+        self.resetting_step = step               #何ステップをresettingに用いるか 
+        self.reduction_rate = reduction          #辻褄のあわないエピソードをどの程度削減するか
 
 def decision_making(self,sensor_val):
     """
@@ -38,14 +82,23 @@ def set_reward(self,reward_val):
       その重みを削減する(weight_reduce)
     3.すべてのパーティクルの分布を一つずらす(particle_slie)
     """
-    set_event(self.sensor,reward_val,self.action,self.events,self.episodes)
-    weight_reduction()
-    particle_sliding()
-    pass
+    self.episodes = set_event(self.sensor,self.action,reward_val,self.events,self.episodes)
+    self.particles = weight_reduce(self.episodes,self.particles,self.reduction_rate)
+    self.particles = particle_slide(self.particles,self.episodes)
 
-def see_distribution():
+def see_distribution(self,star = 50):
     """
-    引数:星の数
-    戻り値:分布の様子のテキスト
+    処理:パーティクルの分布の様子を画面に表示する
+    引数: 星の数
+    戻り値: - 
     """
-    pass
+    particle_numbers = [0 for i in range( len(self.episodes.events) ) ]
+    for i in range(self.particles.num):
+        particle_numbers[ self.particles.distribution[i] ] += 1
+
+    print "A\t|R\t|N\t|Distribution",
+
+    for i in range( len(self.episode) ):
+        print "\n",self.episodes.events[i].action,"\t|",self.episodes.events[i].reward,"\t|",particle_numbers[i],"\t|",
+        for ii in range(int( float(particle_numbers[i]) / float(self.particles.num) * float(star) ) ):
+            print "*",

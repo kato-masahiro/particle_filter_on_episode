@@ -166,7 +166,7 @@ def decision_making(episodes,particles,choice):
     print action
     return action
 
-def set_event(sensor,reward_val,action,events,episodes):
+def set_event(sensor,action,reward_val,event,episodes):
     """
     処理:
         ロボットのエピソード集合に新しいイベントを追加する
@@ -201,7 +201,7 @@ def weight_reduce(episodes,particles,reduction_rate):
             particles.weight[i] *= reduction_rate
     return particles
 
-def particle_sliding(particles,episodes)
+def particle_sliding(particles,episodes):
     """
     処理: すべてのパーティクルの分布を正方向に一つずらす
     引数: particlesクラス、episodesクラス
