@@ -166,7 +166,7 @@ def decision_making(episodes,particles,choice):
     print action
     return action
 
-def set_event(self.sensor,reward_val,self.action,events,sels.episodes):
+def set_event(sensor,reward_val,action,events,episodes):
     """
     処理:
         ロボットのエピソード集合に新しいイベントを追加する
@@ -183,23 +183,31 @@ def set_event(self.sensor,reward_val,self.action,events,sels.episodes):
     if( len(episodes.events) == episodes.limit+1 ):
         del episodes.events[0]
 
-def weight_reduce(self.episodes):
-    """
-    パーティクルが持つ重み(particle_weight[])について、
-    そのパーティクルが存在しているエピソードが最新のイベントの行動・報酬と比較して矛盾している場合に
-    係数(reduction_rate)を掛けて削減する
-    """
-    latest = len(episode.events) - 1
-    for i in range(self.particle_num):
-        if( self.episode[ self.particle_distribution[i] ][1] != self.episode[latest][1] \
-            or \
-        self.episode[ self.particle_distribution[i] ][2] != self.episode[latest][2] ):
-            self.particle_weight[i] *= self.reduction_rate
+    return episodes
 
-def slide
+def weight_reduce(episodes,particles,reduction_rate):
     """
-    すべてのパーティクルの分布を一つずらす
+    処理:
+        パーティクルが持つ重み(particle_weight[])について、
+        そのパーティクルが存在しているエピソードが最新のイベントの行動・報酬と比較して矛盾している場合に
+        係数(reduction_rate)を掛けて削減する
+    引数: episodes,particles,reduction_rate
+    戻り値: particles
     """
-    for i in range(self.particle_num):
-        if self.particle_distribution[i] != (len(self.episode) - 1):
-            self.particle_distribution[i] += 1
+    for i in range(particles.num):
+        if(episodes.events[ particles.distribution[i] ].action != episodes.events[-1].action \
+            or \
+        episodes.events[ particles.distribution[i] ].reward != episodes.events[-1].reward ):
+            particles.weight[i] *= reduction_rate
+    return particles
+
+def particle_sliding(particles,episodes)
+    """
+    処理: すべてのパーティクルの分布を正方向に一つずらす
+    引数: particlesクラス、episodesクラス
+    戻り値: particlesクラス
+    """
+    for i in range(particles.num):
+        if particles.distribution[i] != (len(episodes.events) - 1):
+            particles.distribution[i] += 1
+    return particles
