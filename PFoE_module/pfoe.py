@@ -98,7 +98,7 @@ class Robot:
 
         print "A\t|R\t|N\t|Distribution",
 
-        for i in range( len(self.episode) ):
+        for i in range( len(self.episodes.events) ):
             print "\n",self.episodes.events[i].action,"\t|",self.episodes.events[i].reward,"\t|",particle_numbers[i],"\t|",
             for ii in range(int( float(particle_numbers[i]) / float(self.particles.num) * float(star) ) ):
                 print "*",
