@@ -66,7 +66,7 @@ class Robot:
             print "Error: Incorrect number of sensor values"
             exit(1)
         self.particles = sensor_update(sensor_val,self.episodes,self.particles)
-        self.particles = retrospective_resetting(self.particles, self.episodes, self.resetting_threshold, self.resetting_step, sensor_val)
+        self.particles = retrospective_resetting(self.particles, self.episodes, self.resetting_threshold, self.resetting_step, sensor_val, self.reduction_rate)
         self.particles = particles_resampling( self.particles,len(self.episodes.events) )
         self.action = decision_making(self.episodes, self.particles, self.choice_num)
 

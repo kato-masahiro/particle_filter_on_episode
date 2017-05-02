@@ -40,14 +40,14 @@ def sensor_update(sensor_val,episodes,particles):
             particles.weight[i] = 1.0 / particles.num
     return particles
 
-def retrospective_resetting(particles,episodes,resetting_threshold,resetting_step,sensor_val):
+def retrospective_resetting(particles,episodes,resetting_threshold,resetting_step,sensor_val,reduction_rate):
     """
     処理：
         Particles.alphaがRobot.resetting_thresholdより小さく、
         かつ
         Robot.Episode.sets[] の数が充分存在している場合
         回想に基づくリセッティングを行う
-    引数: particlesクラス,episodesクラス,resetting_threshold,resetting_step,sensor_val
+    引数: particlesクラス,episodesクラス,resetting_threshold,resetting_step,sensor_val,reduction_rate
     引数: resetting_threshold
     戻り値:
     """
@@ -60,7 +60,7 @@ def retrospective_resetting(particles,episodes,resetting_threshold,resetting_ste
         likelihood[0] = likelihood_function(sensor_val, sensor_set)
         for i in range(1, resetting_step):
             likelihood[i] = likelihood_function(episodes.events[-i].sensor, sensor_set)
-        ### print likelihood
+        print likelihood
 
         # 回想したエピソードと行動・報酬が異なるエピソードの尤度は削減される
         for i in range(1, resetting_step):
@@ -68,7 +68,7 @@ def retrospective_resetting(particles,episodes,resetting_threshold,resetting_ste
                 if episodes.events[ii].action != episodes.events[-i].action \
                     or \
                    episodes.events[ii].reward != episodes.events[-i].reward:
-                    likelihood[i][ii] *= self.reduction_rate
+                    likelihood[i][ii] *= reduction_rate
 
         # 各エピソードの重みを求める
         weight_of_episodes = [ likelihood[0][i] for i in range( len(episodes.events) ) ]
@@ -78,11 +78,11 @@ def retrospective_resetting(particles,episodes,resetting_threshold,resetting_ste
                     weight_of_episodes[-(i+1)] *= likelihood[ii][-(i+1) - ii]
                 except:
                     weight_of_episodes[-(i+1)] *= 0 
-        ### print weight_of_episodes
+        print weight_of_episodes
 
         # パーティクルをランダムにリサンプリングし、その後重みをweight_of_episodesで更新する
         s = 0.0
-        ### print "len(episodes.events):",len(episodes.events)
+        print "len(episodes.events):",len(episodes.events)
         for i in range(particles.num):
             particles.distribution[i] = random.randint(0,len(episodes.events) - 1)
             particles.weight[i] = weight_of_episodes[ particles.distribution[i] ]
