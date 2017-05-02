@@ -23,7 +23,7 @@ robot1.particles.weight = [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]
 
 robot1.event.sensor = [1,1,1,1]
 robot1.event.action = 1
-robot1.event.reward = 1.0
+robot1.event.reward = -1.0
 robot1.episodes.setEvent(robot1.event)
 
 robot1.event.sensor = [0,1,1,1]
@@ -32,7 +32,7 @@ robot1.event.reward = 1.0
 robot1.episodes.setEvent(robot1.event)
 
 robot1.event.sensor = [0,0,1,1]
-robot1.event.action = 1
+robot1.event.action = -1
 robot1.event.reward = 1.0
 robot1.episodes.setEvent(robot1.event)
 
@@ -43,7 +43,7 @@ robot1.episodes.setEvent(robot1.event)
 
 sen_val = [1,1,1,1]
 
-robot1.particles = retrospective_resetting(robot1.particles,robot1.episodes,robot1.resetting_threshold,robot1.resetting_step,sen_val)
+robot1.particles = retrospective_resetting(robot1.particles,robot1.episodes,robot1.resetting_threshold,robot1.resetting_step,sen_val,robot1.reduction_rate)
 
 print "distribution:",robot1.particles.distribution
 print "weight:",robot1.particles.weight
@@ -55,7 +55,7 @@ robot2.particles.alpha = 0.1
 robot2.particles.distribution=[0,1,2,0,1,2,0,1,2,0,1,2]
 robot2.particles.weight = [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]
 
-robot2.particles = retrospective_resetting(robot2.particles,robot2.episodes,robot2.resetting_threshold,robot2.resetting_step,sen_val)
+robot2.particles = retrospective_resetting(robot2.particles,robot2.episodes,robot2.resetting_threshold,robot2.resetting_step,sen_val,robot1.reduction_rate)
 
 print "distribution:",robot2.particles.distribution
 print "weight:",robot2.particles.weight
