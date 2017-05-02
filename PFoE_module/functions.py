@@ -62,11 +62,13 @@ def retrospective_resetting(particles,episodes,resetting_threshold,resetting_ste
             likelihood[i] = likelihood_function(episodes.events[-i].sensor, sensor_set)
         ### print likelihood
 
-        # ↓ ここでやっている処理は必要ない?(尤度の削減をやっている)
-        #for i in range(1, resetting_step):
-        #    for ii in range( len(episodes.events) ):
-        #        if episodes[ii][1] != self.episode[-i][1] or self.episode[ii][2] != self.episode[-i][2]:
-        #            likelihood[i][ii] *= self.reduction_rate
+        # 回想したエピソードと行動・報酬が異なるエピソードの尤度は削減される
+        for i in range(1, resetting_step):
+            for ii in range( len(episodes.events) ):
+                if episodes.events[ii].action != episodes.events[-i].action \
+                    or \
+                   episodes.events[ii].reward != episodes.events[-i].reward:
+                    likelihood[i][ii] *= self.reduction_rate
 
         # 各エピソードの重みを求める
         weight_of_episodes = [ likelihood[0][i] for i in range( len(episodes.events) ) ]
