@@ -34,7 +34,7 @@ def sensor_update(sensor_val,episodes,particles):
     if particles.alpha != 0.0:
         for i in range(particles.num):
             particles.weight[i] = particles.weight[i] / particles.alpha
-        particles.alpha /= particles.num
+    #    particles.alpha /= particles.num
     else:
         for i in range(particles.num):
             particles.weight[i] = 1.0 / particles.num
