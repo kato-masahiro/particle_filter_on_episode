@@ -60,7 +60,7 @@ def retrospective_resetting(particles,episodes,resetting_threshold,resetting_ste
         likelihood[0] = likelihood_function(sensor_val, sensor_set)
         for i in range(1, resetting_step):
             likelihood[i] = likelihood_function(episodes.events[-i].sensor, sensor_set)
-        print likelihood
+        ### print likelihood
 
         # 回想したエピソードと行動・報酬が異なるエピソードの尤度は削減される
         for i in range(1, resetting_step):
@@ -78,11 +78,11 @@ def retrospective_resetting(particles,episodes,resetting_threshold,resetting_ste
                     weight_of_episodes[-(i+1)] *= likelihood[ii][-(i+1) - ii]
                 except:
                     weight_of_episodes[-(i+1)] *= 0 
-        print weight_of_episodes
+        ### print weight_of_episodes
 
         # パーティクルをランダムにリサンプリングし、その後重みをweight_of_episodesで更新する
         s = 0.0
-        print "len(episodes.events):",len(episodes.events)
+        ### print "len(episodes.events):",len(episodes.events)
         for i in range(particles.num):
             particles.distribution[i] = random.randint(0,len(episodes.events) - 1)
             particles.weight[i] = weight_of_episodes[ particles.distribution[i] ]
@@ -175,13 +175,14 @@ def decision_making(episodes,particles,choice):
     ### print "action:",action
     return action
 
-def set_event(sensor,action,reward_val,event,episodes):
+def set_event(sensor,action,reward_val,event,episodes,particles):
     """
     処理:
         ロボットのエピソード集合に新しいイベントを追加する
         追加した結果、エピソード数の上限に達した場合は最も古いイベントを削除する
+        削除が行われた場合、パーティクルの分布を負方向に一つづつずらす
     引数:センサ値、報酬値、行動、 eventクラス,episodesクラス
-    戻り値: episodesクラス
+    戻り値: episodesクラス,particlesクラス
     """
     event.sensor = sensor
     event.action = action
@@ -191,8 +192,11 @@ def set_event(sensor,action,reward_val,event,episodes):
 
     if( len(episodes.events) == episodes.limit+1 ):
         del episodes.events[0]
+        for i in range(particles.num):
+            if particles.distribution[i] != 0:
+                particles.distribution[i] -= 1
 
-    return episodes
+    return episodes,particles
 
 def weight_reduce(episodes,particles,reduction_rate):
     """

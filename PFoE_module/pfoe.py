@@ -82,7 +82,7 @@ class Robot:
           その重みを削減する(weight_reduce)
         3.すべてのパーティクルの分布を一つずらす(particle_slie)
         """
-        self.episodes = set_event(self.sensor,self.action,reward_val,self.event,self.episodes)
+        self.episodes,self.particles = set_event(self.sensor,self.action,reward_val,self.event,self.episodes,self.particles)
         self.particles = weight_reduce(self.episodes,self.particles,self.reduction_rate)
         self.particles = particles_slide(self.particles,self.episodes)
 
