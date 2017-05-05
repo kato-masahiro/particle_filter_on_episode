@@ -50,6 +50,14 @@ class Robot:
         self.resetting_step = step               #何ステップをresettingに用いるか 
         self.reduction_rate = reduction          #辻褄のあわないエピソードをどの程度削減するか
 
+    def load_files():
+        pass
+
+    def write_result():
+        """
+        学習結果をファイルに書き込む
+        """
+
     def decision_making(self,sensor_val):
         """
         引数:ロボットの獲得したセンサ値(1次元リスト)
