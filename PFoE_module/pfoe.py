@@ -51,33 +51,21 @@ class Robot:
         self.resetting_step = step               #何ステップをresettingに用いるか 
         self.reduction_rate = reduction          #辻褄のあわないエピソードをどの程度削減するか
 
-    def load(self):
+    def read(self):
         """
         過去のエピソード、重み等をファイルから読み込む
         """
         if os.path.exists("episodes_data.txt") and os.path.exists("episodes_data.txt"):
-            """
-            f = open("episodes_data.txt","r")
-            While True:
-                self.event.sensor = f.readline()
-                print "sensor:",self.event.sensor
-                
-                self.event.action = f.readline()
-                print "action:",self.event.action
-                
-                self.event.reward = f.readline()
-                print "reward:",self.event.reward
+            f = open('episodes_data.txt','r')
+            list = f.readlines()
+            #最後の一文字(改行)を削除,文字列からリストにする
+            for i in range( len(list) ):
+                list[i] = list[i][:-1]
+                list[i] = eval( list[i] )
+            for i in list:
 
-                self.episodes.setEvent
-            """
-            with open("episodes_data.txt") as lines:
-                for line in lines:
-                    self.event.sensor = line.rstrip("\n")
-                    print "sensor:",self.event.sensor
-                    self.event.action = line.rstrip("\n")
-                    print "action:",self.event.action
-                    self.event.ward = line.rstrip("\n")
-                    print "reward:",self.event.reward
+            f.close()
+                
         else:
             print "The files did not exists."
 
@@ -150,6 +138,7 @@ class Robot:
             particle_numbers[ self.particles.distribution[i] ] += 1
 
         print "A\t|R\t|N\t|Distribution",
+
 
         for i in range( len(self.episodes.events) ):
             print "\n",self.episodes.events[i].action,"\t|",self.episodes.events[i].reward,"\t|",particle_numbers[i],"\t|",
