@@ -65,13 +65,17 @@ class Robot:
 
             n = 0
             for i in range (0, len(list) ,3):
-                self.event.action = list[i]
-                self.event.sensor = list[i+1]
+                self.event.sensor = list[i]
+                self.event.action = list[i+1]
                 self.event.reward = list[i+2]
                 self.episodes.setEvent(self.event)
                 n += 1
             f.close()
 
+            f = open('particles_data.txt')
+            list = f.readlines()
+            self.particles.distribution = eval(list[0])
+            self.particles.weight = eval(list[1])
         else:
             print "The files did not exists."
 
