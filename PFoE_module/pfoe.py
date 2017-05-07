@@ -55,17 +55,23 @@ class Robot:
         """
         過去のエピソード、重み等をファイルから読み込む
         """
-        if os.path.exists("episodes_data.txt") and os.path.exists("episodes_data.txt"):
+        if os.path.exists("episodes_data.txt") and os.path.exists("particles_data.txt"):
             f = open('episodes_data.txt','r')
             list = f.readlines()
             #最後の一文字(改行)を削除,文字列からリストにする
             for i in range( len(list) ):
                 list[i] = list[i][:-1]
                 list[i] = eval( list[i] )
-            for i in list:
 
+            n = 0
+            for i in range (0, len(list) ,3):
+                self.event.action = list[i]
+                self.event.sensor = list[i+1]
+                self.event.reward = list[i+2]
+                self.episodes.setEvent(self.event)
+                n += 1
             f.close()
-                
+
         else:
             print "The files did not exists."
 
