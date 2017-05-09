@@ -77,7 +77,7 @@ class Robot:
             self.particles.distribution = eval(list[0])
             self.particles.weight = eval(list[1])
         else:
-            print "The files did not exists."
+            print "* The files did not exists. *"
 
     def write(self):
         """
@@ -111,10 +111,10 @@ class Robot:
         3. 重みに基づき、パーティクルのリサンプリングを行う(particle_resampling)
         4. パーティクルの分布に基づき、最善と思われる行動を求める(decision_making)
         """
-        if(len(sensor_val) != self.sensor):
+        if( len(sensor_val) == len(self.sensor) ):
             self.sensor = sensor_val
         else:
-            print "Error: Incorrect number of sensor values"
+            print "* Error: Incorrect number of sensor values *"
             exit(1)
         self.particles = sensor_update(sensor_val,self.episodes,self.particles)
         self.particles = retrospective_resetting(self.particles, self.episodes, self.resetting_threshold, self.resetting_step, sensor_val, self.reduction_rate)
