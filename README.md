@@ -11,6 +11,10 @@ Likelihood function is defined in ```likelihood_function.py``` then please edit 
 I showed concrete usage in ```example.py```. please refer to.
 
 ## Install
+### Obtaining modules  
+```
+$ git clone https://github.com/kato-masahiro/particle_filter_on_episode/PFoE_module
+```
 
 ## Licence
 
