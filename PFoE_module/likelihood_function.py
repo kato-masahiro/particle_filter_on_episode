@@ -20,7 +20,7 @@ def likelihood_function(sensor,past_sensors):
     n = [0.0 for i in range( len(sensor) ) ]
 
     """
-    このループ内で尤度関数の内容を定義せよ
+    このループ内で尤度関数の内容を定義してください
     """
     for i in range( len(past_sensors) ):
         if len( past_sensors[i] ) != len(sensor):
